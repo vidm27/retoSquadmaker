@@ -8,6 +8,9 @@ def convert_to_valid_number_list(numbers:list):
     for number in numbers:
         if number > 0:
             has_one_value_positive = True
+        elif number == 0:
+            continue
+        
         positive = abs(number)
         valid_numbers.append(positive)
     
@@ -16,7 +19,7 @@ def convert_to_valid_number_list(numbers:list):
     return [0]
     
 
-def determine_least_common_multiple(numbers: List) -> int:
+def determine_least_common_multiple(numbers: List) -> Tuple:
     """
         ALGORITHM: calculate the least common multiple
             2 - 5 - 8 -9 | 2
@@ -30,9 +33,7 @@ def determine_least_common_multiple(numbers: List) -> int:
     common_values = ()
     common_div = 2
 
-    new_number = convert_to_valid_number_list(numbers)
-    if len(new_number) == 1:
-        return new_number[0]
+    new_number = list(numbers)
     
     while len(new_number) != 0:
         # print(f"Current list number: {new_number}")
@@ -68,16 +69,21 @@ def determine_least_common_multiple(numbers: List) -> int:
         if exist_common_div == 0 or fix_len == 0:
             # print(f"Existing common divisor: {common_div}")
             common_div += 1
+        # print(common_values)
 
-        print(common_values)
+    return common_values
 
-
-    result = calculate_least_common_multiple(common_values)
-    # print(f"Least common divisor: {result}")
-    return result
-
-def calculate_least_common_multiple(common_values: Tuple) -> int:
+def multiply_numbers(numbers:Tuple):
     res = 1
-    for i in common_values:
+    for i in numbers:
         res = mul(i, res)
     return res
+
+def calculate_least_common_multiple(numbers: List) -> int:
+    valid_list_number = convert_to_valid_number_list(numbers)
+    if len(valid_list_number) == 1:
+        return valid_list_number[0]
+    
+    common_values = determine_least_common_multiple(valid_list_number)
+    result_mcm = multiply_numbers(common_values)
+    return result_mcm
