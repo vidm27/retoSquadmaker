@@ -1,15 +1,12 @@
 from random import randint
 from typing import List, Union
-from wsgiref.simple_server import demo_app
 
-import requests
 from databases import Database
 from fastapi import FastAPI, HTTPException, Query, status
 
-# from database import create_connection, disconnect, execute
-from api_jokes import api_jokes, select_joke
-from mathematic import calculate_least_common_multiple
-from scheme import Joke, JokeDB
+from schema.schema import Joke, JokeDB
+from services.api_jokes import api_jokes, select_joke
+from services.mathematic import calculate_least_common_multiple
 
 app = FastAPI()
 database = Database('sqlite+aiosqlite:///jokes.db')
@@ -92,7 +89,7 @@ async def delete_joke(joke_id: int):
 async def get_least_common_multiple(numbers: Union[List[int], None] = Query(default=None)):
     try:
         mcm = calculate_least_common_multiple(numbers)
-    except ValueError as e:
+    except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Invalid number: {numbers}")
     return {"result": mcm}
 
