@@ -1,3 +1,4 @@
+from os import stat
 from random import randint
 from typing import List, Union
 
@@ -29,7 +30,7 @@ async def random_joke():
     random_select = randint(0, real_len)
     select_api = type_api[random_select]
     joke = select_joke(select_api)
-    return joke
+    return {"value": joke}
 
 
 @app.get('/jokes/{type_joke}')
@@ -58,7 +59,7 @@ async def save_joke(new_joke: Joke):
         return joke
 
 
-@app.put('/jokes/{joke_id}')
+@app.put('/jokes/{joke_id}',status_code=status.HTTP_202_ACCEPTED)
 async def update_joke(joke_id: int, new_joke: Joke):
     try:
         query = "UPDATE jokes SET value = :joke_value WHERE id = :joke_id"
@@ -70,8 +71,7 @@ async def update_joke(joke_id: int, new_joke: Joke):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Not update joke value for id: {joke_id}")
 
-
-@app.delete('/jokes/{joke_id}')
+@app.delete('/jokes/{joke_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_joke(joke_id: int):
     try:
         query = "DELETE FROM jokes WHERE id = :joke_id"
@@ -82,8 +82,6 @@ async def delete_joke(joke_id: int):
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Not update joke value for id: {joke_id}")
-    else:
-        status.HTTP_202_ACCEPTED
 
 @app.get('/math/lcm/')
 async def get_least_common_multiple(numbers: Union[List[int], None] = Query(default=None)):
