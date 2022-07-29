@@ -23,6 +23,7 @@ async def shutdown():
     await database.disconnect()
 
 
+@app.get("/")
 @app.get('/jokes/')
 async def random_joke():
     type_api = list(api_jokes.keys())
