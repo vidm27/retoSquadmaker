@@ -47,6 +47,46 @@ async def generate_joke(type_joke: str):
     else:
         return joke
 
+@app.post('/jokes/')
+async def save_joke(new_joke: Joke):
+    try:
+        query = "INSERT INTO jokes(value) VALUES(:value)"
+        value = new_joke.dict()
+        res = await database.execute(query=query, values=value)
+        joke = JokeDB(**value, id=res)
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Cann't save the new joke.")
+    else:
+        return joke
+
+
+@app.put('/jokes/{joke_id}')
+async def update_joke(joke_id: int, new_joke: Joke):
+    try:
+        query = "UPDATE jokes SET value = :joke_value WHERE id = :joke_id"
+        value = {"joke_id": joke_id, "joke_value": new_joke.value}
+        res = await database.execute(query=query, values=value)
+        if int(res) == 0:
+            raise Exception("joke not updated")
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Not update joke value for id: {joke_id}")
+
+
+@app.delete('/jokes/{joke_id}')
+async def delete_joke(joke_id: int):
+    try:
+        query = "DELETE FROM jokes WHERE id = :joke_id"
+        value = {"joke_id": joke_id}
+        res = await database.execute(query=query, values=value)
+        if int(res) == 0:
+            raise Exception("joke not delete")
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Not update joke value for id: {joke_id}")
+    else:
+        status.HTTP_202_ACCEPTED
 
 @app.get('/math/lcm/')
 async def get_least_common_multiple(numbers: Union[List[int], None] = Query(default=None)):
