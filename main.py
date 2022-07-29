@@ -48,3 +48,22 @@ async def generate_joke(type_joke: str):
         return joke
 
 
+@app.get('/math/lcm/')
+async def get_least_common_multiple(numbers: Union[List[int], None] = Query(default=None)):
+    try:
+        mcm = calculate_least_common_multiple(numbers)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=f"Invalid number: {numbers}")
+    return {"result": mcm}
+
+
+@app.get('/math/add/')
+async def add_one_to_number(number: Union[str, int]):
+    try:
+        cast_number = int(number)
+        operation_add = cast_number + 1
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"The number passed was not a number: {number}")
+    else:
+        return {"result": operation_add}
