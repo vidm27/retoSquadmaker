@@ -2,7 +2,7 @@ import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
-from api_jokes import api_jokes, select_joke
+from services.api_jokes import api_jokes, select_joke
 from main import app
 
 client = TestClient(app)

@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 from main import app
-from mathematic import (
+from services.mathematic import (
     calculate_least_common_multiple,
     convert_to_valid_number_list,
     determine_least_common_multiple,
